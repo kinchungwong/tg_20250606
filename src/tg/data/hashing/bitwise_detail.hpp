@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstdlib>
 
-#include "common/project_macros.hpp"
+#include "tg/common/project_macros.hpp"
 
 namespace tg::data::hashing::bitwise_detail
 {
