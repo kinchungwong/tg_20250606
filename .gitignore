@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+# Disassembly files
+*.s
+
+# Ignored files and directories
+.ignored
+*.ignored
+*.ignored.*
+
+# OpenCV
+# /opencv_src
+# /opencv_build
+
+# Build outputs
+/build
+/bin
