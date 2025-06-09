@@ -22,3 +22,11 @@ The `historic_code_samples` folder contains six C++ excerpts demonstrating progr
 ## Usage
 
 These documents serve as reference material for contributors. See the root `README.md` for build instructions and visit each markdown file for full details.
+
+## An update on naming
+
+The latest architecture document shifts terminology from **Task** to **Step**, as
+implemented in the conceptual code (`src/tg/testcase/blur_step.hpp`). The design
+rationale also notes that **Subgraph** will be renamed **Proc**. See
+[architectural_rationale/architecture_2025-06-06.md](architectural_rationale/architecture_2025-06-06.md)
+for background on these changes.
