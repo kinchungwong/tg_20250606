@@ -2,6 +2,7 @@
 #include <string>
 #include "tg/testcase/blur_step.hpp"
 #include "tg/testcase/unique_list_testcase.hpp"
+#include "tg/testcase/equiv_set_testcase.hpp"
 
 int main(int argc, char** argv)
 {
@@ -10,6 +11,7 @@ int main(int argc, char** argv)
         // Put any code that needs to test-build here.
         // Remove when done.
         // unique_list_testcase();
+        equiv_set_testcase();
         std::cout << "No exception thrown, exiting normally." << std::endl;
         return 0;
     }

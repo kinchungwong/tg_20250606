@@ -2,33 +2,8 @@
 #include <string>
 #include <functional>
 #include "tg/common/project_macros.hpp"
+#include "tg/testcase/ostrm.hpp"
 #include "tg/data/specialized/unique_list.hpp"
-
-struct OStrm
-{
-    std::ostream* m_pstrm;
-    OStrm(std::ostream& ostrm)
-        : m_pstrm(&ostrm)
-    {}
-
-
-    template <typename T>
-    INLINE_NEVER
-    FLATTEN
-    OStrm& operator<<(T&& value)
-    {
-        ((*m_pstrm).operator<<)(std::forward<T>(value));
-        return *this;
-    }
-
-    INLINE_NEVER
-    FLATTEN
-    OStrm& operator<<(std::ostream& (*f)(std::ostream&))
-    {
-        f(*m_pstrm);
-        return *this;
-    }
-};
 
 INLINE_NEVER
 void unique_list_testcase_1(OStrm& cout)
@@ -91,7 +66,7 @@ void unique_list_testcase_2(OStrm& cout)
 INLINE_NEVER
 void unique_list_testcase()
 {
-    OStrm cout(std::cout);
+    OStrm cout;
     unique_list_testcase_1(cout);
     unique_list_testcase_2(cout);
 }
