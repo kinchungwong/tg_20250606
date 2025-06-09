@@ -40,8 +40,8 @@
 *.ignored.*
 
 # OpenCV
-# /opencv_src
-# /opencv_build
+/opencv_src
+/opencv_build
 
 # Build outputs
 /build
