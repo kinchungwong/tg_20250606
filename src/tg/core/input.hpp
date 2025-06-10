@@ -6,7 +6,7 @@ namespace tg::core
 
 template <typename T>
 Input<T>::Input()
-    : StepData(std::type_index(typeid(T)))
+    : StepData(std::type_index(typeid(T)), StepDataUsage::Input)
 {
 }
 

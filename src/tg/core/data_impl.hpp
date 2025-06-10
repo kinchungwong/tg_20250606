@@ -41,10 +41,48 @@ public:
     using MutexType = std::mutex;
     using LockType = std::unique_lock<MutexType>;
 
+    /**
+     * @brief Constructs a DataImpl with the specified type and the list of
+     * access keys and their usage permissions.
+     *
+     * @note The order of the key-usage pairs in the vector is significant.
+     * To speed up access, ExecData requires an additional lookup parameter,
+     * the usage index, which is basically the index of the key-usage in
+     * that vector.
+     */
     DataImpl(std::type_index type, std::vector<KeyUsagePair> keyusage);
+
+    /**
+     * @brief Destructor.
+     */
+    ~DataImpl();
+
+    /**
+     * @brief Gets the type of the data.
+     */
     std::type_index get_type() const;
+
+    /**
+     * @brief Gets the type-erased pointer to the data without an AccessKey.
+     * @return Pointer to the data, or nullptr if the data is not set.
+     * @note For diagnostic use only.
+     */
+    const void* peek() const;
+
+    /**
+     * @brief Sets the data. Requires AccessKey with StepDataUsage::Output.
+     */
     void set(size_t usage_index, size_t access_key, std::shared_ptr<void> value);
+
+    /**
+     * @brief Gets the data. Requires AccessKey with StepDataUsage::Input.
+     */
     std::shared_ptr<void> get(size_t usage_index, size_t access_key);
+
+    /**
+     * @brief (Not implemented; do not use.) Consumes the data. Requires
+     * AccessKey with StepDataUsage::Consume.
+     */
     std::shared_ptr<void> consume(size_t usage_index, size_t access_key);
 
 private:

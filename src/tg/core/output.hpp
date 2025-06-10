@@ -6,7 +6,7 @@ namespace tg::core
 
 template <typename T>
 Output<T>::Output()
-    : StepData(std::type_index(typeid(T)))
+    : StepData(std::type_index(typeid(T)), StepDataUsage::Output)
 {
 }
 

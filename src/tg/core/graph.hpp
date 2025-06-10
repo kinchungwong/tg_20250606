@@ -7,7 +7,7 @@ namespace tg::core
 class Graph
 {
 public:
-    void add(ProcPtr proc);
+    void add_step(ScopePtr scope, StepPtr step);
 };
 
 } // namespace tg::core

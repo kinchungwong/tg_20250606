@@ -27,8 +27,6 @@ class ExecData
 public:
     using MutexType = std::mutex;
     using LockType = std::unique_lock<MutexType>;
-    using DataImplPtr = std::unique_ptr<DataImpl>;
-
 
     ExecData(std::vector<DataImplPtr> data, std::unordered_map<AccessKey, KeyInfo> keys);
     ~ExecData();

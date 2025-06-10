@@ -22,6 +22,12 @@ std::type_index DataImpl::get_type() const
     return m_type;
 }
 
+const void* DataImpl::peek() const
+{
+    LockType lock(m_mutex);
+    return m_void.get();
+}
+
 void DataImpl::set(size_t usage_index, size_t access_key, std::shared_ptr<void> value)
 {
     LockType lock(m_mutex);

@@ -9,6 +9,7 @@
 #include <vector>
 #include <unordered_map>
 #include <atomic>
+#include <functional>
 
 #include "tg/core/enums.hpp"
 #include "tg/core/exceptions.hpp"
@@ -37,6 +38,8 @@ template <typename T> class Output;
 class DataVisitor;
 
 class DataImpl;
+using DataImplPtr = std::shared_ptr<DataImpl>;
+
 using AccessKey = size_t;
 using KeyUsagePair = std::pair<AccessKey, StepDataUsage>;
 

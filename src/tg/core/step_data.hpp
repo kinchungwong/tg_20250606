@@ -1,6 +1,7 @@
 #pragma once
 #include "tg/core/fwd.hpp"
 #include "tg/core/enums.hpp"
+#include "tg/core/exec_data.hpp"
 
 namespace tg::core
 {
@@ -32,21 +33,39 @@ public:
 
     std::string name() const;
     void set_name(const std::string& name);
-    size_t key() const;
-    void set_key(size_t key);
+    std::string scope_name() const;
+    void set_scope_name(const std::string& scope_name);
+    AccessKey key() const;
+    void set_key(AccessKey key);
+    StepDataUsage usage() const;
     void freeze_metadata();
 
     /**
-     * @brief Special function to allow 
+     * @brief Uses the AccessKey to sync input from ExecData.
+     * @see StepExecutor
      */
-    void visit();
+    void sync_from_exec_data(ExecData& exec_data);
+
+    /**
+     * @brief Uses the AccessKey to sync output to ExecData.
+     * @see StepExecutor
+     */
+    void sync_to_exec_data(ExecData& exec_data);
+
+private:
+    [[noreturn]]
+    void raise_type_mismatch(std::type_index data_impl_type) const;
+
+    [[noreturn]]
+    void raise_output_not_set() const;
 
 private:
     mutable MutexType m_mutex;
     std::type_index m_type;
     std::shared_ptr<void> m_void;
     std::string m_name;
-    size_t m_access_key;
+    std::string m_scope_name;
+    AccessKey m_key;
     bool m_metadata_frozen;
     StepDataUsage m_usage;
 };
