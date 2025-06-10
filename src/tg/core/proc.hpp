@@ -18,6 +18,10 @@ namespace tg::core
  * 
  * All StepData within a Proc will have an associated qualified name,
  * formed from the concatenation of the Scope name and its own name.
+ * 
+ * @todo Work in progress: not implemented yet.
+ * @todo Proc, Scope and Graph are work in progress, class design and 
+ * code logic may be incorrect.
  */
 class Proc
 {
