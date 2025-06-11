@@ -5,6 +5,15 @@
 namespace tg::data::specialized
 {
 
+bool EquivSet::contains(size_t item) const
+{
+    if (item >= m_parents.size())
+    {
+        return false;
+    }
+    return m_parents.at(item) != detail_npos;
+}
+
 void EquivSet::insert(size_t item)
 {
     if (item >= max_item)
@@ -50,10 +59,9 @@ void EquivSet::link(size_t lhs, size_t rhs)
 
 size_t EquivSet::detail_follow(size_t start) const
 {
-    const size_t sz = m_parents.size();
-    if (start >= sz)
+    if (!contains(start))
     {
-        throw std::out_of_range("EquivSet::detail_follow: start index out of range");
+        return detail_npos; // not initialized
     }
     size_t current = start;
     while (true)
@@ -64,10 +72,13 @@ size_t EquivSet::detail_follow(size_t start) const
             // found
             break;
         }
-        if (next >= sz)
+        if (!contains(next))
         {
-            // Value in m_parents either out of range or not initialized (detail_npos).
-            throw std::out_of_range("EquivSet::detail_follow: parent index out of range");
+            throw std::out_of_range((
+                "EquivSet::detail_follow: "
+                "inconsistent state, "
+                "valid current points to invalid parent."
+            ));
         }
         // follow
         current = next;
@@ -77,12 +88,11 @@ size_t EquivSet::detail_follow(size_t start) const
 
 void EquivSet::detail_relink(size_t start, size_t root)
 {
-    const size_t sz = m_parents.size();
-    if (start >= sz)
+    if (!contains(start))
     {
         throw std::out_of_range("EquivSet::detail_relink: start index out of range");
     }
-    if (root >= sz)
+    if (!contains(root))
     {
         throw std::out_of_range("EquivSet::detail_relink: root index out of range");
     }
@@ -91,9 +101,13 @@ void EquivSet::detail_relink(size_t start, size_t root)
     {
         size_t& next_ref = m_parents.at(current);
         size_t next_val = next_ref;
-        if (next_val >= sz)
+        if (!contains(next_val))
         {
-            throw std::out_of_range("EquivSet::detail_relink: parent index out of range");
+            throw std::out_of_range((
+                "EquivSet::detail_relink: "
+                "inconsistent state, "
+                "valid current points to invalid parent."
+            ));
         }
         next_ref = root; // relink
         current = next_val;
@@ -103,15 +117,15 @@ void EquivSet::detail_relink(size_t start, size_t root)
 void EquivSet::optimize()
 {
     const size_t sz = m_parents.size();
-    for (size_t i = 0; i < sz; ++i)
+    for (size_t current = 0; current < sz; ++current)
     {
-        if (m_parents.at(i) == detail_npos)
+        if (!contains(current))
         {
-            continue; // not initialized
+            continue; // skip uninitialized items
         }
         // relink to root
-        size_t root = this->detail_follow(i);
-        this->detail_relink(i, root);
+        size_t root = this->detail_follow(current);
+        this->detail_relink(current, root);
     }
 }
 
@@ -126,22 +140,46 @@ void EquivSet::export_sorted(
     // This may over-allocate due to non-initialized members that will
     // not be exported; this is considered okay.
     members.reserve(sz);
-    for (size_t item = 0; item < sz; ++item)
+    for (size_t current = 0; current < sz; ++current)
     {
-        size_t root_val = m_parents.at(item);
+        size_t root_val = m_parents.at(current);
         if (root_val == detail_npos)
         {
             continue; // skip over items not initialized
         }
-        if (root_val == item)
+        if (root_val == current)
         {
-            roots.push_back(item);
+            roots.push_back(current);
         }
-        members.emplace_back(root_val, item);
+        members.emplace_back(root_val, current);
     }
     // roots already sorted.
     // members to be sorted lexicographically.
     std::sort(members.begin(), members.end());
+}
+
+void EquivSet::export_one(size_t item, std::vector<size_t>& members) const
+{
+    members.clear();
+    if (item >= max_item)
+    {
+        throw std::out_of_range("EquivSet::export_one: item index exceeded maximum limit");
+    }
+    size_t item_root = this->detail_follow(item);
+    if (item_root == detail_npos)
+    {
+        // item not in any set
+        return;
+    }
+    const size_t sz = m_parents.size();
+    for (size_t other = 0; other < sz; ++other)
+    {
+        size_t other_root = this->detail_follow(other);
+        if (other_root == item_root)
+        {
+            members.push_back(other);
+        }
+    }
 }
 
 } // namespace tg::data::specialized
