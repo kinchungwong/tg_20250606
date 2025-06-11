@@ -8,6 +8,7 @@
 #include <type_traits>
 #include "tg/data/specialized/detail/unique_list_base.hpp"
 #include "tg/data/specialized/unique_list.fwd.hpp"
+#include "tg/common/project_macros.hpp"
 
 namespace tg::data::specialized
 {
