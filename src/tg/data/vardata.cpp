@@ -86,7 +86,7 @@ void VarData::type_guard_impl(std::string_view message, std::type_index expect) 
     auto actual = m_type;
     if (actual != expect)
     {
-        throw VarDataTypeMismatchException(message, expect, actual);
+        throw VarDataTypeMismatchException(message, &expect, &actual);
     }
 }
 

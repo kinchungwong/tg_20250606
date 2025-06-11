@@ -1,10 +1,8 @@
 #pragma once
 
 #include <stdexcept>
-#include <typeinfo>
-#include <typeindex>
-#include <optional>
 #include <string_view>
+#include <typeindex>
 
 namespace tg::data
 {
@@ -27,9 +25,9 @@ public:
      * @param actual_type The actual type (optional).
      */
     explicit VarDataTypeMismatchException(
-        std::optional<std::string_view> message, 
-        std::optional<std::type_index> expected_type = std::nullopt,
-        std::optional<std::type_index> actual_type = std::nullopt);
+        std::string_view message_or_empty, 
+        const std::type_index* p_expected_type = nullptr,
+        const std::type_index* p_actual_type = nullptr);
 
     virtual ~VarDataTypeMismatchException() noexcept final;
 
