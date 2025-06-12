@@ -46,3 +46,6 @@
 # Build outputs
 /build
 /bin
+
+# Git worktrees
+/worktrees
