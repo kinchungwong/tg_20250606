@@ -6,6 +6,7 @@
 #include "tg/core/data_impl.hpp"
 #include "tg/core/input.hpp"
 #include "tg/core/output.hpp"
+#include "tg/core/usage_grid.hpp"
 #include "tg/testcase/ostrm.hpp"
 
 void blur_step_testcase_1(OStrm& cout)
@@ -18,8 +19,10 @@ void blur_step_testcase_1(OStrm& cout)
     // Create a BlurStep instance
     auto blur_step = std::make_shared<BlurStep>();
     auto& blur_step_input_ref = blur_step->input();
+    // blur_step_input_ref.set_name("input");
     blur_step_input_ref.set_key(0);
     auto& blur_step_output_ref = blur_step->output();
+    // blur_step_output_ref.set_name("output");
     blur_step_output_ref.set_key(3);
 
     std::vector<DataImplPtr> data;
@@ -41,6 +44,9 @@ void blur_step_testcase_1(OStrm& cout)
     keys.emplace(1, KeyInfo{0, 1}); // Output key
     keys.emplace(2, KeyInfo{1, 0}); // Another Input key
     keys.emplace(3, KeyInfo{1, 1}); // Another Output key
+
+    UsageGrid usage_grid({blur_step});
+    cout << "UsageGrid::get_diagnostics()" << std::endl << usage_grid.get_diagnostics() << std::endl;
 
     auto exec_data = std::make_shared<ExecData>(data, keys);
 
