@@ -2,7 +2,6 @@
 #include <memory>
 #include <vector>
 #include <unordered_map>
-#include "tg/testcase/vardata_testcase.hpp"
 #include "tg/data/vardata.hpp"
 #include "tg/testcase/ostrm.hpp"
 

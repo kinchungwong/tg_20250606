@@ -1,0 +1,6 @@
+#pragma once
+
+void equiv_set_testcase();
+void unique_list_testcase();
+void vardata_testcase();
+void tg_testcase();
