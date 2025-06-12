@@ -15,6 +15,8 @@ public:
     tg::core::Input<cv::Mat>& input() { return *m_input; }
     tg::core::Output<cv::Mat>& output() { return *m_output; }
 
+    std::string name() const final { return "BlurStep"; }
+
     void execute() final;
 
     void visit_data(tg::core::DataVisitor& visitor) final;

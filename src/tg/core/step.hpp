@@ -8,6 +8,7 @@ class Step
 {
 public:
     virtual ~Step() = default;
+    virtual std::string name() const = 0;
     virtual void visit_data(DataVisitor& visitor) = 0;
     virtual void execute() = 0;
 
