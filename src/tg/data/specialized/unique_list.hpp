@@ -8,6 +8,7 @@
 #include <type_traits>
 #include "tg/data/specialized/detail/unique_list_base.hpp"
 #include "tg/data/specialized/unique_list.fwd.hpp"
+#include "tg/common/project_macros.hpp"
 
 namespace tg::data::specialized
 {
@@ -78,6 +79,26 @@ std::optional<size_t> UniqueList<T, Hash, KeyEqual>::find(const T& item) const
         return index; // Item found, return its index
     }
     return std::nullopt; // Item not found
+}
+
+template <typename T, typename Hash, typename KeyEqual>
+std::shared_ptr<T> UniqueList<T, Hash, KeyEqual>::at(size_t index) const
+{
+    return std::static_pointer_cast<T>(this->m_items.at(index));
+}
+
+template <typename T, typename Hash, typename KeyEqual>
+std::shared_ptr<UniqueList<T, Hash, KeyEqual>> UniqueList<T, Hash, KeyEqual>::shallow_copy() const
+{
+    using SelfType = UniqueList<T, Hash, KeyEqual>;
+    auto other = std::make_shared<SelfType>();
+    const size_t sz = this->size();
+    for (size_t i = 0; i < sz; ++i)
+    {
+        // Copy the shared_ptr from the current instance to the new instance
+        other->insert(this->at(i));
+    }
+    return other;
 }
 
 template <typename T, typename Hash, typename KeyEqual>
