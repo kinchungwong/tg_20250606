@@ -4,6 +4,24 @@
 namespace tg::core
 {
 
+struct ScopeDataInfo
+{
+    /**
+     * @brief Opaque pointer to the data.
+     * 
+     * @details This pointer is used to reference the data in a way that
+     * does not expose its type or implementation details.
+     */
+    const char* m_opaque_ptr;
+
+    /**
+     * @brief Simple name given to the data.
+     * @note Simple name (unqualified names) are not unique across scopes.
+     * Some data may not have been given a name.
+     */
+    std::string m_data_name;
+};
+
 /**
  * @brief Represents a scope, or namespace, for a collection of steps and
  * data.
@@ -25,7 +43,7 @@ public:
     std::string name() const;
     void visit(Proc& proc);
     void visit(Step& step);
-    void visit(StepData& data);
+    void visit(Step& step, StepData& data);
 
 private:
     std::string m_name;

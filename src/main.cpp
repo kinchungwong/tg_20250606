@@ -3,6 +3,7 @@
 #include "tg/testcase/blur_step_testcase.hpp"
 #include "tg/testcase/unique_list_testcase.hpp"
 #include "tg/testcase/equiv_set_testcase.hpp"
+#include "tg/testcase/vardata_testcase.hpp"
 
 int main(int argc, char** argv)
 {
@@ -13,6 +14,7 @@ int main(int argc, char** argv)
         // unique_list_testcase();
         // equiv_set_testcase();
         blur_step_testcase();
+        // vardata_testcase();
         std::cout << "No exception thrown, exiting normally." << std::endl;
         return 0;
     }

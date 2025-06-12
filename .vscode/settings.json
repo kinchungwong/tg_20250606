@@ -77,5 +77,6 @@
         "shared_mutex": "cpp",
         "text_encoding": "cpp",
         "filesystem": "cpp"
-    }
+    },
+    "editor.inlineSuggest.edits.showCollapsed": true
 }

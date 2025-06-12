@@ -24,13 +24,14 @@ void Scope::visit(Proc& proc)
 
 void Scope::visit(Step& step)
 {
-    DataCallback callback{[this](StepData& data) -> void {
-        this->visit(data);
+    //! @todo step.set_scope_name(this->m_name);
+    DataCallback callback{[this, &step](StepData& data) -> void {
+        this->visit(step, data);
     }};
     step.visit_data(callback);
 }
 
-void Scope::visit(StepData& data)
+void Scope::visit(Step& step, StepData& data)
 {
     data.set_scope_name(this->m_name);
 }

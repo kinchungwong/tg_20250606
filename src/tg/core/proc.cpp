@@ -19,17 +19,17 @@ Proc::~Proc()
 
 void Proc::add_step(StepPtr step)
 {
-    if (!step)
-    {
-        throw std::runtime_error("Proc::add_step: step is null.");
-    }
-    std::string scope_name = m_scope->name();
-    DataCallback callback{[this, scope_name](StepData& data) -> void {
-        data.set_scope_name(scope_name);
-        this->m_scope->visit(data);
-    }};
-    step->visit_data(callback);
-    m_steps.push_back(std::move(step));
+    // if (!step)
+    // {
+    //     throw std::runtime_error("Proc::add_step: step is null.");
+    // }
+    // std::string scope_name = m_scope->name();
+    // DataCallback callback{[this, scope_name](StepData& data) -> void {
+    //     data.set_scope_name(scope_name);
+    //     this->m_scope->visit(data);
+    // }};
+    // step->visit_data(callback);
+    // m_steps.push_back(std::move(step));
 }
 
 void Proc::get_steps(std::vector<StepPtr>& steps) const
