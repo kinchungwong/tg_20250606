@@ -5,6 +5,8 @@
 #include "tg/testcase/ostrm.hpp"
 #include "tg/data/specialized/unique_list.hpp"
 
+using tg::data::specialized::UniqueList;
+
 INLINE_NEVER
 void unique_list_testcase_1(OStrm& cout)
 {
@@ -76,9 +78,56 @@ void unique_list_testcase_2(OStrm& cout)
 }
 
 INLINE_NEVER
+void unique_list_testcase_3(OStrm& cout)
+{
+    // To check that all original data shared_ptrs are still valid after
+    // shallow_copy, we construct the data first, then insert them
+    // (by shared_ptr, not by value) into the UniqueList, and then shallow_copy.
+    cout << "evaluating: UniqueList<std::string>::shallow_copy" << std::endl;
+    using StrPtr = std::shared_ptr<std::string>;
+    using NameListPtr = std::shared_ptr<UniqueList<std::string>>;
+    StrPtr alice = std::make_shared<std::string>("Alice");
+    StrPtr bob = std::make_shared<std::string>("Bob");
+    StrPtr charlie = std::make_shared<std::string>("Charlie");
+
+    NameListPtr names{
+        std::make_shared<UniqueList<std::string>>()
+    };
+    for (size_t repeat_index = 0u; repeat_index < 3u; ++repeat_index)
+    {
+        // Insert the same names multiple times to check if shallow_copy works correctly
+        names->insert(alice);
+        names->insert(bob);
+        names->insert(charlie);
+    }
+    cout << "Size after inserts: " << names->size() << std::endl;
+    NameListPtr names_copy = names->shallow_copy();
+    cout << "Size of shallow copy: " << names_copy->size() << std::endl;
+    cout << "Original ptr of Alice: " << alice.get() << std::endl;
+    cout << "Original ptr of Bob: " << bob.get() << std::endl;
+    cout << "Original ptr of Charlie: " << charlie.get() << std::endl;
+    cout << "Shallow copy ptr item[0]: " << names_copy->at(0).get() << std::endl;
+    cout << "Shallow copy ptr item[1]: " << names_copy->at(1).get() << std::endl;
+    cout << "Shallow copy ptr item[2]: " << names_copy->at(2).get() << std::endl;
+    auto index_alice = names_copy->find("Alice");
+    std::string str_index_alice = index_alice.has_value() ? std::to_string(index_alice.value()) : "not found";
+    cout << "Index of 'Alice' after shallow copy: "
+         << str_index_alice << std::endl;
+    auto index_bob = names_copy->find("Bob");
+    std::string str_index_bob = index_bob.has_value() ? std::to_string(index_bob.value()) : "not found";
+    cout << "Index of 'Bob' after shallow copy: "
+         << str_index_bob << std::endl;
+    auto index_charlie = names_copy->find("Charlie");
+    std::string str_index_charlie = index_charlie.has_value() ? std::to_string(index_charlie.value()) : "not found";
+    cout << "Index of 'Charlie' after shallow copy: "
+         << str_index_charlie << std::endl;
+}
+
+INLINE_NEVER
 void unique_list_testcase()
 {
     OStrm cout;
     unique_list_testcase_1(cout);
     unique_list_testcase_2(cout);
+    unique_list_testcase_3(cout);
 }

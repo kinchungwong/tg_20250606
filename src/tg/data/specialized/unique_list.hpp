@@ -88,6 +88,20 @@ std::shared_ptr<T> UniqueList<T, Hash, KeyEqual>::at(size_t index) const
 }
 
 template <typename T, typename Hash, typename KeyEqual>
+std::shared_ptr<UniqueList<T, Hash, KeyEqual>> UniqueList<T, Hash, KeyEqual>::shallow_copy() const
+{
+    using SelfType = UniqueList<T, Hash, KeyEqual>;
+    auto other = std::make_shared<SelfType>();
+    const size_t sz = this->size();
+    for (size_t i = 0; i < sz; ++i)
+    {
+        // Copy the shared_ptr from the current instance to the new instance
+        other->insert(this->at(i));
+    }
+    return other;
+}
+
+template <typename T, typename Hash, typename KeyEqual>
 FLATTEN
 size_t UniqueList<T, Hash, KeyEqual>::call_hash(const void* pvoid) const
 {
