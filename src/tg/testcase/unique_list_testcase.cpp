@@ -19,6 +19,12 @@ void unique_list_testcase_1(OStrm& cout)
     cout << "Index of 'Bob': " << idx_1 << std::endl;
     cout << "Index of 'Charlie': " << idx_2 << std::endl;
     cout << "Index of second 'Alice': " << idx_3 << std::endl;
+    const size_t sz = names.size();
+    for (size_t k = 0u; k < sz; ++k)
+    {
+        const auto& item = names.at(k);
+        cout << "Item at " << k << ": " << *item << ", address: " << item.get() << std::endl;
+    }
 }
 
 struct Name
@@ -61,6 +67,12 @@ void unique_list_testcase_2(OStrm& cout)
     cout << "Index of 'Bob': " << idx_1 << std::endl;
     cout << "Index of 'Charlie': " << idx_2 << std::endl;
     cout << "Index of second 'Alice': " << idx_3 << std::endl;
+    const size_t sz = names.size();
+    for (size_t k = 0u; k < sz; ++k)
+    {
+        const auto& item = names.at(k);
+        cout << "Item at " << k << ": " << item->first_name << " " << item->last_name << ", address: " << item.get() << std::endl;
+    }
 }
 
 INLINE_NEVER

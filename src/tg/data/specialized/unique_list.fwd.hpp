@@ -46,6 +46,7 @@ public:
     size_t insert(T&& item);
     size_t insert(std::shared_ptr<T> item);
     std::optional<size_t> find(const T& item) const;
+    std::shared_ptr<T> at(size_t index) const;
 
 protected:
     size_t call_hash(const void* pvoid) const final;

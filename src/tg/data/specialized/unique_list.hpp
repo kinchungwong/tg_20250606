@@ -82,6 +82,12 @@ std::optional<size_t> UniqueList<T, Hash, KeyEqual>::find(const T& item) const
 }
 
 template <typename T, typename Hash, typename KeyEqual>
+std::shared_ptr<T> UniqueList<T, Hash, KeyEqual>::at(size_t index) const
+{
+    return std::static_pointer_cast<T>(this->m_items.at(index));
+}
+
+template <typename T, typename Hash, typename KeyEqual>
 FLATTEN
 size_t UniqueList<T, Hash, KeyEqual>::call_hash(const void* pvoid) const
 {
