@@ -14,6 +14,18 @@ namespace tg::data::specialized
 {
 
 /**
+ * - - -
+ * 
+ * @deprecated DO NOT USE. Design defect means that its equality comparison
+ * operator can return spurious matches, leading to clobbering.
+ * 
+ * Use ```OpaquePtrKey```, resolves this issue by retaining bijectiveness
+ * with the object's full address in the stored obfuscated value.
+ * 
+ * @see OpaquePtrKey
+ * 
+ * - - -
+ * 
  * @brief A property key class that uniquely identifies a subindex associated
  * with an owner object.
  * 
