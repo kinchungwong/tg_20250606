@@ -4,3 +4,4 @@ void equiv_set_testcase();
 void unique_list_testcase();
 void vardata_testcase();
 void tg_testcase();
+void opaque_subindex_testcase();
