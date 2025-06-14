@@ -23,6 +23,8 @@ void opaque_ptr_key_testcase_1(OStrm cout)
     auto k5 = OpaquePtrKey::create(wptr);
     auto k6 = OpaquePtrKey::create(uget);
     auto k7 = OpaquePtrKey::create(sget);
+    cout << "Address of uptr (k3, k6): \n\t\t" << uptr.get() << std::endl;
+    cout << "Address of sptr (k4, k5, k7): \n\t\t" << sptr.get() << std::endl;
     cout << "Hash of k1: " << k1.get_hash() << std::endl;
     cout << "Hash of k2: " << k2.get_hash() << std::endl;
     cout << "Hash of k3: " << k3.get_hash() << std::endl;
