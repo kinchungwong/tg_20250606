@@ -7,9 +7,6 @@ namespace tg::core
 class Step
 {
 public:
-    using CreateStepInfoFunc = std::function<StepInfoPtr()>;
-
-public:
     /**
      * @brief Retrieves the StepInfo associated with this Step.
      * 
@@ -38,21 +35,17 @@ public:
 
 protected:
     /**
-     * @brief Initialize Step as a base class with an initial StepInfo.
-     * @param step_info The StepInfo to be associated with this Step.
-     * @see Step(CreateStepInfoFunc)
+     * @brief Initialize Step as a base class.
+     *
+     * @param step_info The StepInfo object to be bound to this Step.
+     * This can be null; see note.
+     *
+     * @note Derived classes should do exactly one of:
+     * (1) passing in a valid ```StepInfoPtr``` at Step construction, _OR_
+     * (2) override the ```create_step_info()``` method to return a valid
+     *     ```StepInfoPtr``` from there.
      */
-    explicit Step(StepInfoPtr step_info);
-
-    /**
-     * @brief Initialize Step as a base class with deferred initialization
-     * of StepInfo via a function.
-     * @param create_step_info_func A function that creates and returns a
-     * StepInfoPtr. This function will be called on the first call to
-     * ```info()```.
-     * @see Step(StepInfoPtr)
-     */
-    explicit Step(CreateStepInfoFunc create_step_info_func);
+    explicit Step(StepInfoPtr step_info = nullptr);
 
 protected:
     /**
@@ -71,6 +64,26 @@ protected:
      */
     void post_execute_validation(const std::vector<VarData>& data);
 
+    /**
+     * @brief A virtual method to create a StepInfo instance.
+     * 
+     * @details
+     * This method is only called if the ```info()``` method is called for the
+     * first time when ```m_step_info``` has not yet been set.
+     * 
+     * If the Step constructor was called with a non-null StepInfoPtr, this
+     * method will never be called.
+     * 
+     * The base implementation of this method returns a new StepInfo instance
+     * without any step or data definitions.
+     */
+    virtual StepInfoPtr create_step_info();
+
+    /**
+     * @brief Raises exception or trap if the Step is in a fault state.
+     */
+    void trap_on_fault() const;
+
 private:
     Step(const Step&) = delete;
     Step(Step&&) = delete;
@@ -79,7 +92,8 @@ private:
 
 private:
     StepInfoPtr m_step_info;
-    CreateStepInfoFunc m_create_step_info_func;
+    bool m_init_fault;
+    bool m_exec_fault;
 };
 
 } // namespace tg::core
