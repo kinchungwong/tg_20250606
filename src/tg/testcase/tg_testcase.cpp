@@ -3,6 +3,11 @@
 #include <functional>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include "tg/core/fwd.hpp"
+#include "tg/core/step.hpp"
+#include "tg/core/step_info.hpp"
+#include "tg/core/scope.hpp"
+#include "tg/core/scope_info.hpp"
 #include "tg/common/project_macros.hpp"
 #include "tg/core/testcase/blur_step.hpp"
 #include "tg/core/testcase/conncomp_step.hpp"
@@ -67,9 +72,32 @@ void tg_testcase_2(OStrm cout)
 }
 
 INLINE_NEVER
+void tg_testcase_3(OStrm cout)
+{
+    cout << "running tg_testcase_3..." << std::endl;
+    Scope scope("TestScope");
+    auto blur_step = std::make_shared<BlurStep>();
+    auto conncomp_step = std::make_shared<ConnCompStep>();
+    scope.add(blur_step);
+    scope.add(conncomp_step);
+    scope.freeze();
+    cout << "Scope name: " << scope.scopename() << std::endl;
+    auto steps = scope.get_steps();
+    size_t step_count = steps.size();
+    for (size_t step_index = 0u; step_index < step_count; ++step_index)
+    {
+        cout << "Step " << step_index << " in Scope '" << scope.scopename() << "':" << std::endl; 
+        auto& step = steps.at(step_index);
+        print_step_summary(*step, cout);
+    }
+    cout << "tg_testcase_3 success." << std::endl;
+}
+
+INLINE_NEVER
 void tg_testcase()
 {
     OStrm cout;
     tg_testcase_1(cout);
     tg_testcase_2(cout);
+    tg_testcase_3(cout);
 }

@@ -71,9 +71,16 @@ public:
     bool datainfos_is_frozen() const;
 
     /**
+     * @brief Prevents further changes to the Step's scope.
+     */
+    void scope_freeze();
+    bool scope_is_frozen() const;
+
+    /**
      * @returns True if all properties are frozen, i.e. the StepInfo instance
      * becomes immutable, and does not require locking for thread-safe access.
      */
+    void freeze();
     bool is_all_frozen() const;
 
 public: // Definitions of Step information.
@@ -110,6 +117,27 @@ public: // Definitions of Step information.
     {
         detail_set_step_type(typeid(StepType));
     }
+
+    /**
+     * @brief Gets the scope info of the Step.
+     * 
+     * @returns A shared pointer to the ScopeInfo, or an empty pointer if
+     *          there is none or the weak pointer has expired.
+     */
+    ScopeInfoPtr scopeinfo() const;
+
+    /**
+     * @brief Returns the name of the ScopeInfo, or otherwise an empty string.
+     */
+    std::string scopename() const;
+
+    /**
+     * @brief This method is called by Scope when a Step is added to it.
+     * 
+     * @details This method saves a weak pointer to the ScopeInfo.
+     * Any other necessary work is to be handled by Scope::add(StepPtr).
+     */
+    void on_added_to_scope(size_t scope_owner_token, ScopeInfoPtr scopeinfo);
 
 public: // Definitions of data information.
 
@@ -200,54 +228,11 @@ private:
 private:
     std::string m_step_shortname;
     std::type_index m_step_type;
+    ScopeInfoWPtr m_wp_scopeinfo;
     std::vector<DataInfoTuple> m_datainfos;
     std::atomic<bool> m_names_frozen;
+    std::atomic<bool> m_scope_frozen;
     std::atomic<bool> m_datainfos_frozen;
 };
-
-// class Step
-// {
-// public:
-//     using CreateStepInfoFunc = std::function<StepInfo()>;
-
-// public:
-//     virtual ~Step();
-
-//     /**
-//      * @brief Function to be called by the Executor to execute the Step.
-//      * 
-//      * @param data The array of VarData, used for both inputs and outputs.
-//      * 
-//      * @note 
-//      * The ```data``` array size is same as ```StepInfo::data_count()```,
-//      * and the items are stored according to the order of their definition
-//      * in the StepInfo.
-//      */
-//     virtual void execute(std::vector<VarData>& data) = 0;
-
-// public:
-//     StepInfo& info();
-
-// protected:
-//     /**
-//      * @brief Constructs a Step with an initial StepInfo.
-//      */
-//     explicit Step(StepInfo step_info);
-
-//     /**
-//      * @brief Constructs a Step with a deferred-initialized StepInfo.
-//      */
-//     explicit Step(CreateStepInfoFunc create_step_info_func);
-
-// private:
-//     Step(const Step&) = delete;
-//     Step(Step&&) = delete;
-//     Step& operator=(const Step&) = delete;
-//     Step& operator=(Step&&) = delete;
-
-// private:
-//     StepInfo m_step_info;
-//     CreateStepInfoFunc m_create_step_info_func;
-// };
 
 } // namespace tg::core
