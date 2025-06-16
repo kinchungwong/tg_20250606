@@ -4,6 +4,78 @@
 namespace tg::core
 {
 
+class ScopeStepIter
+{
+public:
+    static constexpr size_t npos = ~static_cast<size_t>(0u);
+    ScopeStepIter()
+        : m_wp_scopeinfo()
+        , m_pos(npos)
+    {}
+    explicit ScopeStepIter(ScopeInfoPtr scopeinfo, size_t pos = 0u)
+        : m_wp_scopeinfo(scopeinfo)
+        , m_pos(pos)
+    {}
+    ~ScopeStepIter() = default;
+    ScopeStepIter(const ScopeStepIter&) = default;
+    ScopeStepIter(ScopeStepIter&&) = default;
+    ScopeStepIter& operator=(const ScopeStepIter&) = default;
+    ScopeStepIter& operator=(ScopeStepIter&&) = default;
+public:
+    ScopeStepIter& operator++()
+    {
+        ++m_pos;
+        return *this;
+    }
+    ScopeStepIter operator++(int)
+    {
+        ScopeIter tmp(*this);
+        ++(*this);
+        return tmp;
+    }
+    bool operator==(const ScopeStepIter& other) const
+    {
+        if (this == &other)
+        {
+            return true;
+        }
+        auto sp_this = m_wp_scopeinfo.lock();
+        auto sp_other = other.m_wp_scopeinfo.lock();
+        bool valid_this = (bool)sp_this;
+        bool valid_other = (bool)sp_other;
+        size_t this_size = valid_this ? sp_this->step_count() : 0u;
+        size_t other_size = valid_other ? sp_other->step_count() : 0u;
+        bool this_past_end = (m_pos >= this_size);
+        bool other_past_end = (other.m_pos >= other_size);
+        if (this_past_end && other_past_end)
+        {
+            // All past-end iterators (including containers expired or empty)
+            // are considered equal, because they act as sentinels to stop a
+            // for-loop.
+            // This is the case even if the underlying ScopeInfo addresses
+            // are different.
+            return true;
+        }
+        if (this_past_end || other_past_end)
+        {
+            return false;
+        }
+        if (!valid_this || !valid_other)
+        {
+            return false;
+        }
+        if (sp_this.get() != sp_other.get())
+        {
+            return false;
+        }
+        return (m_pos == other.m_pos);
+    }
+
+private:
+    ScopeInfoWPtr m_wp_scopeinfo;
+    size_t m_pos;
+};
+
 /**
  * @brief Scope acts as both a namespace and a collection of Steps.
  * 

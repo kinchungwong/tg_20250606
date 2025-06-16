@@ -30,6 +30,11 @@ void ScopeInfo::assert_owner_token(size_t owner_token) const
     }
 }
 
+size_t ScopeInfo::step_count() const
+{
+    return m_wp_steps.size();
+}
+
 void ScopeInfo::add_step(size_t owner_token, StepPtr step)
 {
     if (m_frozen)
@@ -49,6 +54,15 @@ void ScopeInfo::add_step(size_t owner_token, StepPtr step)
      * as in the owning Scope.
      */
     m_wp_steps.emplace_back(step);
+}
+
+StepPtr ScopeInfo::step_at(size_t index) const
+{
+    if (index >= m_wp_steps.size())
+    {
+        return StepPtr{};
+    }
+    return m_wp_steps.at(index).lock();
 }
 
 const std::string& ScopeInfo::scopename() const

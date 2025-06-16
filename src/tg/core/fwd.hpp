@@ -35,6 +35,7 @@ using StepInfoPtr = std::shared_ptr<StepInfo>;
 struct DataInfoTuple;
 
 class Scope;
+class ScopeIter;
 using ScopePtr = std::shared_ptr<Scope>;
 
 class ScopeInfo;
