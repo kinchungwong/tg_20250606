@@ -49,6 +49,11 @@ StepPtr ScopeStepIter::operator*() const
 
 ScopeStepIter& ScopeStepIter::operator++()
 {
+    if (m_pos == npos)
+    {
+        throw std::overflow_error("ScopeStepIter::operator++() "
+            "bad attempt to increment an end-iterator.");
+    }
     ++m_pos;
     return *this;
 }
