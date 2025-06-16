@@ -2,9 +2,12 @@
 #include "tg/core/scope_info.hpp"
 #include "tg/core/step.hpp"
 #include "tg/core/step_info.hpp"
+#include "tg/core/details/scope_step_iter.hpp"
 
 namespace tg::core
 {
+
+using ScopeStepIter = Scope::ScopeStepIter;
 
 Scope::Scope(std::string_view scopename)
     : m_scopename{scopename}
@@ -80,6 +83,31 @@ bool Scope::contains(StepPtr step) const
 std::vector<StepPtr> Scope::get_steps() const
 {
     return m_steps;
+}
+
+ScopeStepIter Scope::begin() const
+{
+    return ScopeStepIter(m_sp_scopeinfo, 0u);
+}
+
+ScopeStepIter Scope::end() const
+{
+    auto npos = ScopeStepIter::npos;
+    return ScopeStepIter(m_sp_scopeinfo, npos);
+}
+
+size_t Scope::step_count() const
+{
+    return m_steps.size();
+}
+
+StepPtr Scope::step_at(size_t index) const
+{
+    if (index > m_steps.size())
+    {
+        return nullptr;
+    }
+    return m_steps.at(index);
 }
 
 void Scope::freeze()

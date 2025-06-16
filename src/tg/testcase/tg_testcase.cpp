@@ -82,12 +82,11 @@ void tg_testcase_3(OStrm cout)
     scope.add(conncomp_step);
     scope.freeze();
     cout << "Scope name: " << scope.scopename() << std::endl;
-    auto steps = scope.get_steps();
-    size_t step_count = steps.size();
-    for (size_t step_index = 0u; step_index < step_count; ++step_index)
+    size_t next_step_index = 0u;
+    for (const auto& step : scope)
     {
+        size_t step_index = next_step_index++;
         cout << "Step " << step_index << " in Scope '" << scope.scopename() << "':" << std::endl; 
-        auto& step = steps.at(step_index);
         print_step_summary(*step, cout);
     }
     cout << "tg_testcase_3 success." << std::endl;

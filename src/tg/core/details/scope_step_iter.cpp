@@ -67,69 +67,66 @@ bool ScopeStepIter::operator==(const ScopeStepIter& other) const
         return true;
     }
     /**
-     * @details Requirements:
-     * (1) If both iterators point to some valid ScopeInfo, and...
-     * (1.1) If the ScopeInfo pointers are equal (SAME INSTANCE, ...), and...
-     * (1.1.1) If the positions are equal, return true; no need to check bounds (IMPLIED (EITHER (BOTH GO, SAME POS) OR (BOTH STOP))). However...
-     * (1.1.2) If the positions are not equal, compare their positions to the ScopeInfo's step count. Then...
-     * (1.1.2.1) If both are out-of-bounds, return true (BOTH STOP). Otherwise...
-     * (1.1.2.2) Return true if their positions are equal (BOTH GO, SAME POS), false otherwise. (BOTH GO, DIFFERENT POS).
-     * (1.2) If their ScopeInfo pointers are not equal, return false (DIFFERENT INSTANCES).
-     * (2) If both iterators point to a null or expired ScopeInfo, return true (BOTH STOP).
-     * (3) If one iterator points to a valid ScopeInfo and the other to a null or expired ScopeInfo, ...
-     * (3...) (cont'd) On the iterator containing the valid ScopeInfo, compare its position to its step count. Then...
-     * (3...) (cont'd) If the position is out-of-bounds, return true (BOTH STOP). False otherwise.
+     * @note
+     * Equality operator logic.
+     * 
+     * The primary concern is that loop sentinels must work reliably.
+     * The secondary concern is that, for usability, this iterator needs to work gracefully
+     * when the underlying container (which is append-only) is grown in size, and when
+     * the underlying container (as a weak ref) expires.
+     * 
+     * The equality operator for ScopeStepIter is defined as follows:
+     * (1) Iterators from the same container compare equal when their positions match or when both are past the container’s current size.
+     * (2) Iterators from different containers are never equal unless both are expired.
+     * (3) When one iterator is expired and the other is valid, they compare equal only if the valid iterator’s position is past its current size.
      */
-    throw std::runtime_error("ScopeStepIter::operator==(): Not implemented yet");
-#if 0 // DISABLED - POSSIBLY INCORRECT IMPLEMENTATION
-    // /**
-    //  * @note Logic table.
-    //  * 
-    //  * Shorthands.
-    //  * L for LHS (left-hand-side, or first argument to equality operator).
-    //  * R for RHS.
-    //  * Z for zero. (pointer null or expired)
-    //  * T for terminal. (pos >= size) (both are unsigned integers.)
-    //  * V for valid. (pointer valid, pos < size)
-    //  * PPE for all equal (both pointer and position).
-    //  * 
-    //  * Let:
-    //  * (1) LZ = LHS null/expire, (2) RZ = RHS null/expire,
-    //  * (3) LT = LHS past-end,    (4) RT = RHS past-end,
-    //  * (5) LV = LHS valid,       (6) RV = RHS valid.
-    //  * (7) PPE = (LHS valid) AND (RHS valid) AND (LHS.pos == RHS.pos)
-    //  * Given:
-    //  * (LV == true) <===> (LZ == false AND LQ == false)
-    //  * (RV == true) <===> ((RX OR RE) == false)
-    //  * (EqualityOperatorResult == true) <===> ((5 AND 6) OR ((1 OR 3) AND (2 or 4)))
-    //  */
-    // auto sp_this = m_wp_scopeinfo.lock();
-    // auto sp_other = other.m_wp_scopeinfo.lock();
-    // if (sp_this == sp_other && m_pos == other.m_pos)
-    // {
-    //     /**
-    //      * @note Both iterators point to the same ScopeInfo and position.
-    //      * Pas-end check is not needed here, because when all attributes 
-    //      * are equal, their past-end checks result will also be equal.
-    //      */
-    //     return true;
-    // }
-    // /**
-    //  * @note Past-end check with the already-locked ScopeInfo ptrs.
-    //  */
-    // bool this_past_end = this->detail_is_past_end(*sp_this);
-    // bool other_past_end = other.detail_is_past_end(*sp_other);
-    // if (this_past_end && other_past_end)
-    // {
-    //     // All past-end iterators (including containers expired or empty)
-    //     // are considered equal, because they act as sentinels to stop a
-    //     // for-loop.
-    //     // This is the case even if the underlying ScopeInfo addresses
-    //     // are different.
-    //     return true;
-    // }
-    // return (sp_this == sp_other && m_pos == other.m_pos);
-#endif // DISABLED - POSSIBLY INCORRECT IMPLEMENTATION
+    auto sp_this = m_wp_scopeinfo.lock();
+    auto sp_other = other.m_wp_scopeinfo.lock();
+    if (!sp_this && !sp_other)
+    {
+        return true; // Both iterators are empty or expired.
+    }
+    else if (sp_this && sp_other)
+    {
+        if (sp_this != sp_other)
+        {
+            // Different ScopeInfo instances, cannot be equal.
+            return false;
+        }
+        if (m_pos == other.m_pos)
+        {
+            // Both iterators point to the same ScopeInfo and position.
+            // Either they are both valid, or they're both past-the-end.
+            return true; 
+        }
+        // Same instance, but we still need to perform bounds check.
+        size_t both_size = sp_this->step_count();
+        if (m_pos >= both_size && other.m_pos >= both_size)
+        {
+            // Both iterators are past-the-end.
+            return true;
+        }
+        // If they are not past-the-end, they are equal if and only if their positions match.
+        return m_pos == other.m_pos;
+    }
+    else if (sp_this)
+    {
+        // The other iterator is expired or empty.
+        // The iterators are considered equal if and only if this one is past the end,
+        // which signifies that both are loop sentinels.
+        return this->detail_is_past_end(*sp_this);
+    }
+    else
+    {
+        // This iterator is expired or empty, while the other is valid.
+        // The iterators are considered equal if and only if the other one is past the end.
+        return other.detail_is_past_end(*sp_other);
+    }
+#if defined(__cpp_lib_unreachable)
+#  if __cpp_lib_unreachable >= 202202L
+    std::unreachable(); 
+#  endif
+#endif
 }
 
 bool ScopeStepIter::operator!=(const ScopeStepIter& other) const
