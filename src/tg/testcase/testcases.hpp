@@ -6,3 +6,4 @@ void vardata_testcase();
 void tg_testcase();
 void opaque_subindex_testcase();
 void opaque_ptr_key_testcase();
+void scope_step_iter_testcase();

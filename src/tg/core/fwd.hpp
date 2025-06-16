@@ -41,4 +41,6 @@ class ScopeInfo;
 using ScopeInfoPtr = std::shared_ptr<ScopeInfo>;
 using ScopeInfoWPtr = std::weak_ptr<ScopeInfo>;
 
+namespace details { class ScopeStepIter; }
+
 } // namespace tg::core

@@ -1,5 +1,6 @@
 #pragma once
 #include "tg/core/fwd.hpp"
+#include "tg/core/details/scope_step_iter.hpp"
 
 namespace tg::core
 {
@@ -20,6 +21,9 @@ namespace tg::core
  */
 class Scope
 {
+public:
+    using ScopeStepIter = tg::core::details::ScopeStepIter;
+
 public:
     /**
      * @brief Initializes a Scope with a given name.
@@ -65,6 +69,27 @@ public:
      * @brief Gets all Steps belonging to the Scope.
      */
     std::vector<StepPtr> get_steps() const;
+
+    /**
+     * @brief Creates a begin-iterator for the steps.
+     */
+    ScopeStepIter begin() const;
+
+    /**
+     * @brief Creates an end-iterator for the steps.
+     */
+    ScopeStepIter end() const;
+
+    /**
+     * @brief Returns the number of Steps in the Scope.
+     */
+    size_t step_count() const;
+
+    /**
+     * @brief Read the Step at the specified index as a strong ref,
+     * or return an empty pointer if the index is out of bounds.
+     */
+    StepPtr step_at(size_t index) const;
 
     /**
      * @brief Freezes the NameScope as well as all Step objects added to it.

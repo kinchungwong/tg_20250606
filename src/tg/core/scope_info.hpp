@@ -28,6 +28,11 @@ public:
     void assert_owner_token(size_t owner_token) const;
 
     /**
+     * @brief Returns the number of Steps in the ScopeInfo.
+     */
+    size_t step_count() const;
+
+    /**
      * @brief Stores a weak pointer to the Step in the ScopeInfo.
      * 
      * @param owner_token The token of the owner Scope, used for validation.
@@ -36,6 +41,12 @@ public:
      * @note This method converts the Step to a weak pointer for storage.
      */
     void add_step(size_t owner_token, StepPtr step);
+
+    /**
+     * @brief Read the Step at the specified index as a strong ref,
+     * or return an empty pointer if the index is out of bounds.
+     */
+    StepPtr step_at(size_t index) const;
 
     /**
      * @brief Retrieves the short name of the Scope.
