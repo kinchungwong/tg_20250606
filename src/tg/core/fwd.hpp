@@ -35,16 +35,12 @@ using StepInfoPtr = std::shared_ptr<StepInfo>;
 struct DataInfoTuple;
 
 class Scope;
-class ScopeIter;
 using ScopePtr = std::shared_ptr<Scope>;
 
 class ScopeInfo;
 using ScopeInfoPtr = std::shared_ptr<ScopeInfo>;
 using ScopeInfoWPtr = std::weak_ptr<ScopeInfo>;
 
-namespace details
-{
-    class ScopeStepIter;    
-}
+namespace details { class ScopeStepIter; }
 
 } // namespace tg::core
