@@ -103,7 +103,7 @@ size_t Scope::step_count() const
 
 StepPtr Scope::step_at(size_t index) const
 {
-    if (index > m_steps.size())
+    if (index >= m_steps.size())
     {
         return nullptr;
     }
