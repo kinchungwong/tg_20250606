@@ -56,7 +56,50 @@ public:
     DataList();
     ~DataList();
 
+    /**
+     * @brief Add a Scope and all its Steps to the list.
+     */
+    void add_scope(ScopePtr scope);
+
+    /**
+     * @brief Add a single Step to the list. The Step must belong to a Scope
+     *        that has been added previously.
+     */
+    void add_step(StepPtr step);
+
+    /**
+     * @brief Returns the number of scopes stored.
+     */
+    size_t scope_count() const;
+
+    /**
+     * @brief Returns the number of steps stored.
+     */
+    size_t step_count() const;
+
+    /**
+     * @brief Returns the number of data items collected.
+     */
+    size_t data_count() const;
+
+    /**
+     * @brief Access collected scopes.
+     */
+    const std::vector<ScopePtr>& scopes() const;
+
+    /**
+     * @brief Access collected steps.
+     */
+    const std::vector<StepPtr>& steps() const;
+
+    /**
+     * @brief Access collected scoped data info tuples.
+     */
+    const std::vector<ScopedDataInfoTuple>& datainfos() const;
+
 private:
+    size_t find_scope_index(ScopeInfoPtr scopeinfo) const;
+
     std::vector<ScopePtr> m_scopes;
     std::vector<StepPtr> m_steps;
     std::vector<ScopedDataInfoTuple> m_datainfo;
