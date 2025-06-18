@@ -11,4 +11,6 @@ class StepInfoNotEmpty : std::runtime_error { using std::runtime_error::runtime_
 class StepInfoNameNotFound : std::runtime_error { using std::runtime_error::runtime_error; };
 class StepInfoBadIndex : std::runtime_error { using std::runtime_error::runtime_error; };
 
+class NotImplemented : std::runtime_error { using std::runtime_error::runtime_error; };
+
 } // namespace tg::core

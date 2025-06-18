@@ -36,6 +36,7 @@ struct DataInfoTuple;
 
 class Scope;
 using ScopePtr = std::shared_ptr<Scope>;
+using ScopeWPtr = std::weak_ptr<Scope>;
 
 class ScopeInfo;
 using ScopeInfoPtr = std::shared_ptr<ScopeInfo>;
